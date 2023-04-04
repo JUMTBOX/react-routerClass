@@ -1,6 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from './Header';
-import { Link, Route, Routes } from 'react-router-dom';
 
 export default function BoardComponent() {
   return (
