@@ -16,7 +16,12 @@ const initState = {
       done: false,
     },
   ],
+  buyList: ['닌텐도', '자동차'],
+  todoListCount: 3,
 };
+
+let counts = initState.list.length;
+initState['nextID'] = counts;
 
 const CREATE = 'todo / CREATE';
 const DONE = 'todo / DONE';
@@ -50,6 +55,16 @@ export default function todo(state = initState, action) {
     case DONE:
       return {
         ...state,
+        list: state.list.map((el) => {
+          if (el.id === action.id) {
+            return {
+              ...el,
+              done: true,
+            };
+          } else {
+            return el;
+          }
+        }),
       };
     default:
       return state;

@@ -1,8 +1,10 @@
 import todo from './modules/todo';
-import weightReducer from './modules/weight';
+import weight from './modules/weight';
+import mbti from './modules/mbti';
 import { combineReducers } from 'redux';
 
 export default combineReducers({
   todo,
-  weightReducer,
+  weight,
+  mbti,
 });

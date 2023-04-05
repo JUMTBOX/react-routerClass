@@ -1,29 +1,25 @@
-import './App.css';
-import Header from './components/Header';
-import TestRedux from './components/TestRedux';
-import { Route, Routes } from 'react-router-dom';
-import BoardComponent from './components/BoardComponent';
-import ProfileComponent from './components/ProfileComponent';
-import NotFound from './components/NotFound';
-import BoardDetail from './components/BoardDetail';
-import TodoList from './components/TodoList';
-import ListContainer from './components/ListContainer';
+import React from 'react';
+import Start from './pages/Start';
+import Mbti from './pages/Mbti';
+import styled from 'styled-components';
+import GlobalStyle from './components/GlobalStyle';
+import { useSelector } from 'react-redux';
+
+const Main = styled.main`
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 500px;
+  padding: 0 35px;
+  margin: auto;
+  text-align: center;
+`;
 
 function App() {
+  const page = useSelector((state) => state.mbti.page);
   return (
     <>
-      <div className="App">
-        <ListContainer />
-        {/* <Routes>
-          <Route path="/todolist" element={<TodoList />} />
-          <Route path="/" element={<Header />} />
-          <Route path="/profile" element={<ProfileComponent />} />
-          <Route path="/test" element={<TestRedux />} />
-          <Route path="/board" element={<BoardComponent />} />
-          <Route path="/board/:boardID" element={<BoardDetail />} />
-          <Route path="/*" element={<NotFound />} />
-        </Routes> */}
-      </div>
+      <GlobalStyle />
+      <Main>{page === 0 ? <Start /> : <Mbti />}</Main>
     </>
   );
 }
