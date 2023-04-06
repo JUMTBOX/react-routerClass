@@ -4,7 +4,7 @@ import mbti from './modules/mbti';
 import { combineReducers } from 'redux';
 
 export default combineReducers({
-  todo,
-  weight,
+  // todo,
+  // weight,
   mbti,
 });

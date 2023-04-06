@@ -1,3 +1,5 @@
+const mongoClient = require('./mongoConnect');
+
 const initState = {
   mbtiResult: '',
   page: 0, // 0: 인트로 페이지, 1 ~ n: 선택 페이지, n+1: 결과 페이지
@@ -127,69 +129,58 @@ const initState = {
   },
 };
 
-const initStateEmpty = {
-  mbtiResult: '',
-  page: 0,
-  survey: [],
-  explanation: {},
+//DB에 최로로 데이터를 색인하는 컨트롤러
+
+const setData = async (req, res) => {
+  try {
+    const client = await mongoClient.connect();
+    const data = client.db('mbti').collection('data');
+    await data.insertOne(initState);
+    res.status(200).json('데이터 추가 성공');
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('에러! 백이 잘못함');
+  }
 };
 
-//Action Type설정
-const CHECK = 'mbti/CHECK';
-const NEXT = 'mbti/NEXT';
-const RESET = 'mbti/RESET';
-const INIT = 'mbti/INIT';
-//Action 생성 함수 설정
-export function init(data) {
-  return {
-    type: INIT,
-    payload: data,
-  };
-}
-
-export function check(result) {
-  return {
-    type: CHECK,
-    payload: { result },
-  };
-}
-export function next() {
-  return {
-    type: NEXT,
-  };
-}
-export function reset() {
-  return {
-    type: RESET,
-  };
-}
-
-//리듀서
-export default function mbti(state = initStateEmpty, action) {
-  switch (action.type) {
-    case INIT:
-      return {
-        ...state,
-        survey: action.payload.survey,
-        explanation: action.payload.explanation,
-      };
-    case CHECK:
-      return {
-        ...state,
-        mbtiResult: state.mbtiResult + action.payload.result,
-      };
-    case NEXT:
-      return {
-        ...state,
-        page: state.page + 1,
-      };
-    case RESET:
-      return {
-        ...state,
-        mbtiResult: '',
-        page: 0,
-      };
-    default:
-      return state;
+const getData = async (req, res) => {
+  try {
+    const client = await mongoClient.connect();
+    const data = client.db('mbti').collection('data');
+    const mbtiData = await data.find({}).toArray();
+    res.status(200).json(mbtiData);
+  } catch (err) {
+    console.error(err);
   }
-}
+};
+
+const getCounts = async (req, res) => {
+  try {
+    const client = await mongoClient.connect();
+    const countDB = client.db('mbti').collection('counts');
+    const counts = await countDB.findOne({ id: 1 });
+    res.status(200).json(counts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('방문자 수 가져오기 실패');
+  }
+};
+
+const incCounts = async (req, res) => {
+  try {
+    const client = await mongoClient.connect();
+    const countDB = client.db('mbti').collection('counts');
+    await countDB.updateOne({ id: 1 }, { $inc: { counts: +1 } });
+    res.status(200).json('방문자 수 업데이트 성공');
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('방문자 수 업데이트 실패');
+  }
+};
+
+module.exports = {
+  setData,
+  getData,
+  getCounts,
+  incCounts,
+};
